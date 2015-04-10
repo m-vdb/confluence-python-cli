@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='Confluence-py',
-    version='1.0',
+    version='1.0.1',
     description='Python Confluence module and command line',
     author='Raymii / Mvdb',
     author_email='mvdb@work4labs.com',
