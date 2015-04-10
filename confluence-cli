@@ -16,6 +16,8 @@
 
 import sys, xmlrpclib, argparse, string, logging
 
+from confluence import connect, ConfluenceGroup, ConfluencePage, ConfluenceSpace, ConfluenceUser
+
 #
 # Logging
 #
@@ -28,173 +30,6 @@ formatter = logging.Formatter('%(levelname)s: [%(name)s] %(message)s')
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
-
-class ConfluenceSpace(object):
-    def __init__(self, token, server):
-        self.server = server
-        self.token = token
-
-    def get_all(self):
-        self.spaces = self.server.confluence2.getSpaces(self.token)
-        return self.spaces
-
-    def get_by_key(self,space_key):
-        self.space_key = space_key
-        self.space = self.server.confluence2.getSpace(self.token,self.space_key)
-        return self.space
-
-    def create(self,space_key,space_name):
-        self.space_key = space_key
-        self.space_name = space_name
-        self.space_to_create = {"key":self.space_key,"name":self.space_name}
-        self.server.confluence2.addSpace(self.token,self.space_to_create)
-        return self.get_by_key(space_key)
-
-    def remove(self,space_key):
-        self.space_key = space_key
-        self.server.confluence2.removeSpace(self.token,self.space_key)
-
-    def get_all_pages(self,spaceKey):
-        self.spacekey = spaceKey
-        return self.server.confluence2.getPages(self.token, self.spacekey)
-
-class ConfluenceGroup(object):
-    def __init__(self,token,server,groupname):
-        self.server = server
-        self.token = token
-        self.groupname = groupname
-
-    def get_all(self):
-        return self.server.confluence2.getGroups(self.token)
-
-    def add(self):
-        self.server.confluence2.addGroup(self.token,self.groupname)
-
-    def remove(self):
-        self.server.confluence2.removeGroup(self.token,self.groupname,"confluence-users")
-
-
-class ConfluenceUser(object):
-    def __init__(self,token,server,username):
-        self.server = server
-        self.token = token
-        self.username = username
-
-    def create(self,full_name,email,password):
-        self.password = password
-        self.email = email
-        self.full_name = full_name
-        self.user_to_create = {"name":self.username,"fullname":self.full_name,"email":self.email}
-        self.server.confluence2.addUser(self.token,self.user_to_create,self.password)
-
-    def get_info(self):
-        return self.server.confluence2.getUser(self.token,self.username)
-
-    def get_groups(self):
-        return self.server.confluence2.getUserGroups(self.token,self.username)
-
-    def remove(self):
-        self.server.confluence2.removeUser(self.token,self.username)
-
-    def deactivate(self):
-        self.server.confluence2.deactivateUser(self.token,self.username)
-
-    def reactivate(self):
-        self.server.confluence2.reactivateUser(self.token,self.username)
-
-    def add_to_group(self,group):
-        self.group = group
-        self.server.confluence2.addUserToGroup(self.token,self.username,self.group)
-
-    def remove_from_group(self,group):
-        self.group = group
-        self.server.confluence2.removeUserFromGroup(self.token,self.username,self.group)   
-
-    def change_password(self,password):
-        self.password = password
-        self.server.confluence2.changeUserPassword(self.token,self.username,self.password)   
-
-    def get_all(self):
-        return self.server.confluence2.getActiveUsers(self.token, True)
-
-
-
-class ConfluencePage(object):
-    def __init__(self,token,server,name,spaceKey,content,page_id="",label=""):
-        self.server = server
-        self.token = token
-        self.name = name
-        self.spaceKey = spaceKey
-        self.content = content
-        self.label = label
-        self.logger = logging.getLogger(
-            __name__ + '.'+ self.__class__.__name__
-        )
-        self.logger.debug('Creating a new instance (name="{}", label="{}")'.format(name, label))
-
-    def add(self,parent_id=0,content=""):
-        self.logger.debug("Add page '{}'; label = [{}]".format(self.name, self.label))
-        if content:
-            self.content = content 
-        self.parent_id = parent_id
-        self.newPost = {"title":self.name,"content":self.content,"space":self.spaceKey,"parentId":str(self.parent_id)}
-        self.post_to_wiki = self.server.confluence2.storePage(self.token,self.newPost)
-        self.created_page = self.server.confluence2.getPage(self.token, self.spaceKey, self.name)
-        self.page_url = self.created_page["url"]
-        self.page_id = self.created_page["id"]
-        if self.label:
-            self.set_label()
-        return {"url": self.page_url, "id": self.page_id}
-
-    def update(self,content,parent_id=0):
-        self.remove()
-        self.parent_id = parent_id
-        self.add(str(parent_id),content)
-
-    def get(self):
-        self.wanted_page = self.server.confluence2.getPage(self.token, self.spaceKey, self.name)
-        return self.wanted_page
-
-    def get_content(self):
-        self.wanted_page_id = self.get_page_id
-        self.content_values = {"style": "clean"}
-        self.page_content = self.wanted_page = self.server.confluence2.renderContet(self.token, self.wanted_page_id,self.content_values)
-        return self.page_content
-
-
-    def get_id(self):
-        return self.get()['id']
-
-    def get_content(self):
-        return self.get()['content']
-
-    def remove(self):
-        self.page = self.server.confluence2.getPage(self.token, self.spaceKey, self.name)
-        self.server.confluence2.removePage(self.token, self.page["id"])
-
-    def set_label(self):
-        self.page_id = self.get_id()
-        self.logger.debug("Set label '{}' on page {}".format(
-            self.label, self.page_id))
-        if not self.server.confluence2.addLabelByName(self.token, self.label, self.page_id):
-            self.logger.debug("Unable to set label '{}' on page ID {}".format(
-                self.label, self.page_id))
-
-    def get_content(self):
-        return self.get()['content']
-
-    def get_version(self):
-        return self.get()['version']
-
-class ConfluenceAuth(object):
-    def __init__(self,server,username,password):
-        self.server = server
-        self.username = username
-        self.password = password
-
-    def login(self):
-        self.token = self.server.confluence2.login(self.username, self.password)
-        return self.token
 
 def error_out(error_message):
     print("Error: ")
@@ -315,13 +150,11 @@ def Content(args):
     return content
 
 def Connect(args):
-    wiki_url = args.wikiurl + "/rpc/xmlrpc"
-    xml_server = xmlrpclib.Server(wiki_url)
     try:
-        token = ConfluenceAuth(xml_server,args.username,args.password).login()
+        api_resp = connect(args.wikiurl, args.username, args.password)
     except xmlrpclib.Fault as err:
-        error_out("%d: %s" % ( err.faultCode, err.faultString))
-    return {"token":token,"xml_server":xml_server}
+        error_out("%d: %s" % (err.faultCode, err.faultString))
+    return api_resp
 
 
 def Actions(token,xml_server,args,content):

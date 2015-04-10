@@ -1,3 +1,6 @@
+import logging
+
+
 class ConfluencePage(object):
     def __init__(self,token,server,name,spaceKey,content,page_id="",label=""):
         self.server = server
