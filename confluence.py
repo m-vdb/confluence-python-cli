@@ -446,7 +446,7 @@ def Actions(token,xml_server,args,content):
         print(("Error: %d: %s") % (err.faultCode, err.faultString))
 
 
-def main():
+if __name__ == "__main__":
     args = Parser()
 
     if args.verbose:
@@ -455,5 +455,3 @@ def main():
     content = Content(args)
     server = Connect(args)
     Actions(server["token"],server["xml_server"],args,content)
-
-main()
