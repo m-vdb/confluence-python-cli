@@ -1,6 +1,12 @@
 # Confluence.py
 
-Simple python script to use a Atlassian Confluence Wiki via the CLI. 
+Simple python module to use a Atlassian Confluence Wiki. CLI available.
+
+## Installation
+
+Via pip:
+
+    pip install confluence-py
 
 ## Usage
     
