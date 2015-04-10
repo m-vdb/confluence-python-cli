@@ -28,8 +28,8 @@ Create a page with a parent:
 
 ## CLI Usage
     
-    $ python confluence.py --help                                                                                         
-    usage: confluence.py [-h] -w WIKIURL -u USERNAME -p PASSWORD
+    $ confluence-cli --help                                                                                         
+    usage: confluence-cli [-h] -w WIKIURL -u USERNAME -p PASSWORD
                          {addpage,updatepage,listpages,removepage,getpagecontent,getpagesummary,listspaces,addspace,removespace,adduser,removeuser,deactivateuser,reactivateuser,changeuserpassword,addgroup,removegroup,listgroups,listusers,getallpages,addusertogroup,removeusergromgroup,listusergroups}
                          ...
     
@@ -76,60 +76,60 @@ Create a page with a parent:
 
 Add page:
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" addpage -f ./content.txt -n "CLI New Page" -s "RAY"
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" addpage -f ./content.txt -n "CLI New Page" -s "RAY"
     http://wiki.raymii.org/display/RAY/CLI+New+Page
 
 
 Remove Page:
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" removepage -n "CLI New Page" -s "RAY"
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" removepage -n "CLI New Page" -s "RAY"
 
 
 Update Page:
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" updatepage -f ./content.txt -n "CLI New Page" -s "RAY"
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" updatepage -f ./content.txt -n "CLI New Page" -s "RAY"
     http://wiki.raymii.org/display/RAY/CLI+New+Page
 
 Get page content (HTML):
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" getpagecontent -n "CLI New Page" -s "RAY"
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" getpagecontent -n "CLI New Page" -s "RAY"
     <h1>Table of Contents</h1>
     <p><ac:macro ac:name="toc" /></p>
     <h1>Information</h1>
 
 Add Space:
 
-    ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" addspace -n "New Space" -s "NS"
+    confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" addspace -n "New Space" -s "NS"
 
 Remove Space:
 
-    ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" removespace -s "NS"
+    confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" removespace -s "NS"
 
 List all spaces:
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" listspaces
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" listspaces
     NS, New Space, http://wiki.raymii.org/display/NS
     ITS, IT Staff, http://wiki.raymii.org/display/ITS
 
 
 Add user:
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" adduser -U "newuser" -N "New user" -E "newuser@raymii.org" -X "password"
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" adduser -U "newuser" -N "New user" -E "newuser@raymii.org" -X "password"
 
 Remove user:
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" removeuser -U newuser
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" removeuser -U newuser
 
 Deactivate user:
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" deactivateuser -U newuser
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" deactivateuser -U newuser
 
 Reactivate user:
 
-    $ ./confluence.py --wikiurl="http://wiki.raymii.org" -u "api" -p "" reactivateuser -U newuser
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" reactivateuser -U newuser
 
 
-For more actions, run `./confluence.py -h` or see the usage section above.
+For more actions, run `confluence-cli -h` or see the usage section above.
 
 ## More info
 
