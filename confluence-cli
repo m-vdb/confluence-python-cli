@@ -154,7 +154,7 @@ def Connect(args):
         api = Api(args.wikiurl, args.username, args.password)
     except xmlrpclib.Fault as err:
         error_out("%d: %s" % (err.faultCode, err.faultString))
-    return {"token": api.token, "xml_server": api.server}
+    return api
 
 
 def Actions(api, args, content):
@@ -163,7 +163,7 @@ def Actions(api, args, content):
         if args.action == "addpage":
             logger.debug('Command: "addpage", args.name = "{}", args.label = "{}"'.format(
                 args.name, args.label))
-            new_page = api.addpage(ags.name, args.spacekey, content, args.label, args.parentpage)
+            new_page = api.addpage(args.name, args.spacekey, content, args.label, args.parentpage)
             print(new_page.get()["url"])
    
         elif args.action == "updatepage":
@@ -272,5 +272,5 @@ if __name__ == "__main__":
         console_handler.setLevel(logging.DEBUG)
 
     content = Content(args)
-    server = Connect(args)
-    Actions(server["token"],server["xml_server"],args,content)
+    api = Connect(args)
+    Actions(api, args, content)
