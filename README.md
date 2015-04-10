@@ -1,4 +1,4 @@
-# Confluence.py
+# confluence-py
 
 Simple python module to use a Atlassian Confluence Wiki. CLI available.
 
@@ -8,7 +8,25 @@ Via pip:
 
     pip install confluence-py
 
-## Usage
+## Module usage
+
+Initialise the Api:
+
+    from confluence import Api
+    wiki_url = ""  # your wiki url
+    user, pw = "", ""  # your credentials
+    api = Api(wiki_url, user, pw)
+
+Create a page:
+
+    api.addpage("My new page", "SPACE_KEY", "This is my new page, yay!")
+
+Create a page with a parent:
+
+    api.addpage(..., parentpage="xxxx")  # with parent id
+
+
+## CLI Usage
     
     $ python confluence.py --help                                                                                         
     usage: confluence.py [-h] -w WIKIURL -u USERNAME -p PASSWORD
