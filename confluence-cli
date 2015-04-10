@@ -16,7 +16,7 @@
 
 import sys, xmlrpclib, argparse, string, logging
 
-from confluence import connect, ConfluenceGroup, ConfluencePage, ConfluenceSpace, ConfluenceUser
+from confluence import Api, ConfluenceGroup, ConfluencePage, ConfluenceSpace, ConfluenceUser
 
 #
 # Logging
@@ -151,51 +151,42 @@ def Content(args):
 
 def Connect(args):
     try:
-        api_resp = connect(args.wikiurl, args.username, args.password)
+        api = Api(args.wikiurl, args.username, args.password)
     except xmlrpclib.Fault as err:
         error_out("%d: %s" % (err.faultCode, err.faultString))
-    return api_resp
+    return {"token": api.token, "xml_server": api.server}
 
 
-def Actions(token,xml_server,args,content):
+def Actions(api, args, content):
 
     try:
         if args.action == "addpage":
             logger.debug('Command: "addpage", args.name = "{}", args.label = "{}"'.format(
                 args.name, args.label))
-            new_page = ConfluencePage(
-                token,xml_server,args.name,args.spacekey,content,label=args.label)
-            new_page.add(args.parentpage)
+            new_page = api.addpage(ags.name, args.spacekey, content, args.label, args.parentpage)
             print(new_page.get()["url"])
    
         elif args.action == "updatepage":
-            update_page = ConfluencePage(token,xml_server,args.name,args.spacekey,content,args.parentpage,label=args.label)
-            update_page.update(content,args.parentpage)
-            update_page.set_label()
-            print(update_page.get()['url'])
+            page = api.updatepage(args.name, args.spacekey, content, args.parentpage, args.label)
+            print(page.get()['url'])
        
         elif args.action == "getpagecontent":
-            get_page = ConfluencePage(token,xml_server,args.name,args.spacekey,content).get_content()
-            print(get_page)
+            content = api.getpagecontent(args.name, args.spacekey)
+            print(content)
 
         elif args.action == "getpagesummary":
-            page = ConfluencePage(token,xml_server,args.name,args.spacekey,content).get()
+            page = api.getpage(args.name, args.spacekey)
             print args.delimiter.join((
              page['id'], page['space'], page['parentId'], page['title'], page['url']))
 
         elif args.action == "listpages":
-            if args.spacekey == "":
-                spaces = ConfluenceSpace(token,xml_server).get_all()
-            else:
-                spaces = [ConfluenceSpace(token,xml_server).get_by_key(args.spacekey)]
-            for space in spaces:
-                all_pages = ConfluenceSpace(token,xml_server).get_all_pages(space['key'])
-                for page in all_pages:
-                    print args.delimiter.join((
-                     page['id'], page['space'], page['parentId'], page['title'], page['url']))
+            all_pages = api.listpages(args.spacekey)
+            for page in all_pages:
+                print args.delimiter.join((
+                 page['id'], page['space'], page['parentId'], page['title'], page['url']))
        
         elif args.action == "removepage":
-            removed_page = ConfluencePage(token,xml_server,args.name,args.spacekey,"").remove()
+            removed_page = api.removepage(args.name, args.spacekey)
        
         elif args.action == "addspace":
             add_space = ConfluenceSpace(token,xml_server).create(args.spacekey,args.name)

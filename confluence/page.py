@@ -2,7 +2,7 @@ import logging
 
 
 class ConfluencePage(object):
-    def __init__(self,token,server,name,spaceKey,content,page_id="",label=""):
+    def __init__(self,token,server,name,spaceKey,content="",page_id="",label=""):
         self.server = server
         self.token = token
         self.name = name
@@ -42,7 +42,6 @@ class ConfluencePage(object):
         self.content_values = {"style": "clean"}
         self.page_content = self.wanted_page = self.server.confluence2.renderContet(self.token, self.wanted_page_id,self.content_values)
         return self.page_content
-
 
     def get_id(self):
         return self.get()['id']
