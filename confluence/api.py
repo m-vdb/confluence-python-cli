@@ -37,6 +37,12 @@ class Api(object):
     def getpage(self, name, spacekey):
         return ConfluencePage(self.token, self.server, name, spacekey).get()
 
+    def update_or_add_page(self, *args, **kwargs):
+        try:
+            return self.updatepage(*args, **kwargs)
+        except xmlrpclib.Fault:
+            return self.addpage(*args, **kwargs)
+
     def listpages(self, spacekey=""):
         if not spacekey:
             spaces = ConfluenceSpace(self.token, self.server).get_all()
