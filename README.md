@@ -99,11 +99,11 @@ Get page content (HTML):
 
 Add Space:
 
-    confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" addspace -n "New Space" -s "NS"
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" addspace -n "New Space" -s "NS"
 
 Remove Space:
 
-    confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" removespace -s "NS"
+    $ confluence-cli --wikiurl="http://wiki.raymii.org" -u "api" -p "" removespace -s "NS"
 
 List all spaces:
 
