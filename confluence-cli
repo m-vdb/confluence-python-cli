@@ -16,7 +16,7 @@
 
 import sys, xmlrpclib, argparse, string, logging
 
-from confluence import Api, ConfluenceSpace, ConfluenceUser
+from confluence import Api
 
 #
 # Logging
@@ -189,10 +189,10 @@ def Actions(api, args, content):
             removed_page = api.removepage(args.name, args.spacekey)
        
         elif args.action == "addspace":
-            add_space = ConfluenceSpace(token,xml_server).create(args.spacekey,args.name)
+            add_space = api.addspace(args.spacekey, args.name)
        
         elif args.action == "removespace":
-            remove_space = ConfluenceSpace(token,xml_server).remove(args.spacekey)
+            remove_space = api.removespace(args.spacekey)
        
         elif args.action == "listspaces":
             all_spaces = api.listspaces()

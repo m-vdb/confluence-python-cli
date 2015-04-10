@@ -57,6 +57,12 @@ class Api(object):
     def removepage(self, name, spacekey):
         return ConfluencePage(self.token, self.server, name, spacekey).remove()
 
+    def addspace(self, spacekey, name):
+        return ConfluenceSpace(self.token, self.server).create(spacekey, name)
+
+    def removespace(self, spacekey):
+        return ConfluenceSpace(self.token, self.server).remove(spacekey)
+
     def listspaces(self):
         return ConfluenceSpace(self.token, self.server).get_all()
 
