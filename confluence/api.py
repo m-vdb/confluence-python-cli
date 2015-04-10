@@ -1,6 +1,7 @@
 import xmlrpclib
 
 from .auth import ConfluenceAuth
+from .group import ConfluenceGroup
 from .page import ConfluencePage
 from .space import ConfluenceSpace
 from .user import ConfluenceUser
@@ -70,3 +71,24 @@ class Api(object):
 
     def getuserinfo(self, username):
         return ConfluenceUser(self.token, self.server, username).get_info()
+
+    def addgroup(self, groupname):
+        return ConfluenceGroup(self.token, self.server, groupname).add()
+
+    def removegroup(self, groupname):
+        return ConfluenceGroup(self.token, self.server, groupname).remove()
+
+    def addusertogroup(self, username, groupname):
+        return ConfluenceUser(self.token, self.server, username).add_to_group(groupname)
+
+    def removeuserfromgroup(self, username, groupname):
+        return ConfluenceUser(self.token, self.server, username).remove_from_group(groupname)
+
+    def getgroups(self):
+        return ConfluenceGroup(self.token, self.server, "users").get_all()
+
+    def getusers(self):
+        return ConfluenceUser(self.token, self.server, "users").get_all()
+
+    def getusergroups(self, username):
+        return ConfluenceUser(self.token, self.server, username).get_groups()

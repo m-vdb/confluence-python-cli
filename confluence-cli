@@ -236,29 +236,29 @@ def Actions(api, args, content):
                 print(("%s: %s") % (key,value))
 
         elif args.action == "addgroup":
-            add_group = ConfluenceGroup(token,xml_server,args.groupname).add()
+            add_group = api.addgroup(args.groupname)
 
         elif args.action == "removegroup":
-            remove_group = ConfluenceGroup(token,xml_server,args.groupname).remove()
+            remove_group = api.removegroup(args.groupname)
 
         elif args.action == "addusertogroup":
-            add_user_to_group = ConfluenceUser(token,xml_server,args.newusername).add_to_group(args.groupname)
+            add_user_to_group = api.addusertogroup(args.newusername, args.groupname)
 
         elif args.action == "removeuserfromgroup":
-            remove_user_from_group = ConfluenceUser(token,xml_server,args.newusername).remove_from_group(args.groupname)
+            remove_user_from_group = api.removeuserfromgroup(args.newusername, args.groupname)
 
         elif args.action == "listgroups":
-            allgroups = ConfluenceGroup(token,xml_server,"users").get_all()
+            allgroups = api.getgroups()
             for group in allgroups:
                 print(group)
 
         elif args.action == "listusers":
-            allusers = ConfluenceUser(token,xml_server,"users").get_all()
+            allusers = api.getusers()
             for user in allusers:
                 print(user)
 
         elif args.action == "listusergroups":
-            user_groups = ConfluenceUser(token,xml_server,args.newusername).get_groups()
+            user_groups = api.getusergroups(args.newusername)
             for group in user_groups:
                 print(group)
 
