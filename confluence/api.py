@@ -17,7 +17,7 @@ class Api(object):
         self.server = xmlrpclib.Server(url)
         self.token = ConfluenceAuth(self.server, username, password).login()
 
-    def addpage(self, name, spacekey, content, label=None, parentpage=None):
+    def addpage(self, name, spacekey, content, label="", parentpage=""):
         new_page = ConfluencePage(
             self.token, self.server, name,
             spacekey, content, label=label
@@ -25,7 +25,7 @@ class Api(object):
         new_page.add(parentpage)
         return new_page
 
-    def updatepage(self, name, spacekey, content, page_id, label=None):
+    def updatepage(self, name, spacekey, content, page_id, label=""):
         page = ConfluencePage(self.token, self.server, name, spacekey, page_id, label=label)
         page.update(content, page_id)
         page.set_label()
@@ -37,7 +37,7 @@ class Api(object):
     def getpage(self, name, spacekey):
         return ConfluencePage(self.token, self.server, name, spacekey).get()
 
-    def listpages(self, spacekey=None):
+    def listpages(self, spacekey=""):
         if not spacekey:
             spaces = ConfluenceSpace(self.token, self.server).get_all()
         else:
@@ -48,7 +48,7 @@ class Api(object):
             for page in all_pages:
                 yield page, space
 
-    def getallpages(self, spacekey=None):
+    def getallpages(self, spacekey=""):
         all_pages = api.listpages()
         for page, space in all_pages:
             page_content = ConfluencePage(self.token, self.server, page['title'],space['key']).get_content()
