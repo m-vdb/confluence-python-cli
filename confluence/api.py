@@ -46,7 +46,13 @@ class Api(object):
         for space in spaces:
             all_pages = ConfluenceSpace(self.token, self.server).get_all_pages(space['key'])
             for page in all_pages:
-                yield page
+                yield page, space
+
+    def getallpages(self, spacekey=None):
+        all_pages = api.listpages()
+        for page, space in all_pages:
+            page_content = ConfluencePage(self.token, self.server, page['title'],space['key']).get_content()
+            yield page, page_content
 
     def removepage(self, name, spacekey):
         return ConfluencePage(self.token, self.server, name, spacekey).remove()

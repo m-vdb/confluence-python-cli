@@ -16,7 +16,7 @@
 
 import sys, xmlrpclib, argparse, string, logging
 
-from confluence import Api, ConfluenceGroup, ConfluencePage, ConfluenceSpace, ConfluenceUser
+from confluence import Api, ConfluenceSpace, ConfluenceUser
 
 #
 # Logging
@@ -181,7 +181,7 @@ def Actions(api, args, content):
 
         elif args.action == "listpages":
             all_pages = api.listpages(args.spacekey)
-            for page in all_pages:
+            for page, _ in all_pages:
                 print args.delimiter.join((
                  page['id'], page['space'], page['parentId'], page['title'], page['url']))
        
@@ -201,11 +201,10 @@ def Actions(api, args, content):
                  space['key'], space['name'], space['url']))
        
         elif args.action == "getallpages":
-            all_pages = api.listpages()
-            for page in all_pages:
-                page_content = ConfluencePage(token,xml_server,page['title'],space['key'],"").get_content()
+            all_pages = api.getallpages()
+            for page, page_content in all_pages:
                 valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
-                page_filename = space['key'] + "_" + page['title'] + ".html"
+                page_filename = page['space'] + "_" + page['title'] + ".html"
                 page_filename = ''.join(c for c in page_filename if c in valid_chars)
                 with open(page_filename, "w") as page_file:
                     try:
