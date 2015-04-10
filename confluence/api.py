@@ -3,6 +3,7 @@ import xmlrpclib
 from .auth import ConfluenceAuth
 from .page import ConfluencePage
 from .space import ConfluenceSpace
+from .user import ConfluenceUser
 
 
 class Api(object):
@@ -48,3 +49,24 @@ class Api(object):
 
     def removepage(self, name, spacekey):
         return ConfluencePage(self.token, self.server, name, spacekey).remove()
+
+    def listspaces(self):
+        return ConfluenceSpace(self.token, self.server).get_all()
+
+    def adduser(self, newusername, fullname, email, userpassword):
+        return ConfluenceUser(self.token, self.server, newusername).create(fullname, email, userpassword)
+
+    def removeuser(self, username):
+        return ConfluenceUser(self.token, self.server, username).remove()
+
+    def deactivateuser(self, username):
+        return ConfluenceUser(self.token, self.server, username).deactivate()
+
+    def reactivateuser(self, username):
+        return ConfluenceUser(self.token, self.server, username).reactivate()
+
+    def changeuserpassword(self, username, newpassword):
+        return ConfluenceUser(self.token, self.server, username).change_password(newpassword)
+
+    def getuserinfo(self, username):
+        return ConfluenceUser(self.token, self.server, username).get_info()

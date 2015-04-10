@@ -195,47 +195,43 @@ def Actions(api, args, content):
             remove_space = ConfluenceSpace(token,xml_server).remove(args.spacekey)
        
         elif args.action == "listspaces":
-            all_spaces = ConfluenceSpace(token,xml_server).get_all()
+            all_spaces = api.listspaces()
             for space in all_spaces:
                 print(("%s, %s, %s") % (
                  space['key'], space['name'], space['url']))
        
         elif args.action == "getallpages":
-            all_spaces = ConfluenceSpace(token,xml_server).get_all()
-            for space in all_spaces:
-                all_pages = ConfluenceSpace(token,xml_server).get_all_pages(space['key'])
-                print("Saving space: %s" % space['name'])
-                print("------------")
-                for page in all_pages:
-                    page_content = ConfluencePage(token,xml_server,page['title'],space['key'],"").get_content()
-                    valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
-                    page_filename = space['key'] + "_" + page['title'] + ".html"
-                    page_filename = ''.join(c for c in page_filename if c in valid_chars)
-                    with open(page_filename, "w") as page_file:
-                        try:
-                            page_file.write(page_content)
-                            page_file.close()
-                            print("Saved page: %s" % page_filename)
-                        except IOError:
-                            error_out('Could not write file: %s' % page['title'])
+            all_pages = api.listpages()
+            for page in all_pages:
+                page_content = ConfluencePage(token,xml_server,page['title'],space['key'],"").get_content()
+                valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+                page_filename = space['key'] + "_" + page['title'] + ".html"
+                page_filename = ''.join(c for c in page_filename if c in valid_chars)
+                with open(page_filename, "w") as page_file:
+                    try:
+                        page_file.write(page_content)
+                        page_file.close()
+                        print("Saved page: %s" % page_filename)
+                    except IOError:
+                        error_out('Could not write file: %s' % page['title'])
 
         elif args.action == "adduser":
-            add_user = ConfluenceUser(token,xml_server,args.newusername).create(args.fullname,args.email,args.userpassword)
+            add_user = api.adduser(args.newusername, args.fullname, args.email, args.userpassword)
        
         elif args.action == "removeuser":
-            remove_user = ConfluenceUser(token,xml_server,args.newusername).remove()
+            remove_user = api.removeuser(args.newusername)
        
         elif args.action == "deactivateuser":
-            deactivate_user = ConfluenceUser(token,xml_server,args.newusername).deactivate()
+            deactivate_user = api.deactivateuser(args.newusername)
        
         elif args.action == "reactivateuser":
-            reactivate_user = ConfluenceUser(token,xml_server,args.newusername).reactivate()
+            reactivate_user = api.reactivateuser(args.newusername)
    
         elif args.action == "changeuserpassword":
-            change_pass = ConfluenceUser(token,xml_server,args.newusername).change_password(args.userpassword)
+            change_pass = api.changeuserpassword(args.newusername, args.userpassword)
        
         elif args.action == "listuserinfo":
-            user_info = ConfluenceUser(token,xml_server,args.newusername).get_info()
+            user_info = api.getuserinfo(args.newusername)
             for key,value in user_info.items():
                 print(("%s: %s") % (key,value))
 
