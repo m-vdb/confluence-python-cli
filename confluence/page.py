@@ -29,9 +29,20 @@ class ConfluencePage(object):
         return {"url": self.page_url, "id": self.page_id}
 
     def update(self,content,parent_id=0):
-        self.remove()
+        if content:
+            self.content = content
+
         self.parent_id = parent_id
-        self.add(str(parent_id),content)
+        self.created_page = self.server.confluence2.getPage(self.token, self.spaceKey, self.name)
+        self.created_page["content"] = self.content
+        self.post_to_wiki = self.server.confluence2.storePage(self.token,self.created_page)
+        self.page_url = self.created_page["url"]
+        self.page_id = self.created_page["id"]
+
+        if self.label:
+            self.set_label()
+
+        return {"url": self.page_url, "id": self.page_id}
 
     def get(self):
         self.wanted_page = self.server.confluence2.getPage(self.token, self.spaceKey, self.name)
