@@ -2,10 +2,6 @@
 
 Simple python module to use a Atlassian Confluence Wiki. CLI available.
 
-## about this fork
-
-updated the api to work with Python 3
-
 ## Installation
 
 Via pip:
