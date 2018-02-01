@@ -1,4 +1,6 @@
-import xmlrpclib
+import xmlrpc
+import xmlrpc.client
+import xmlrpc.server
 
 from .auth import ConfluenceAuth
 from .group import ConfluenceGroup
@@ -14,7 +16,7 @@ class Api(object):
 
     def connect(self, url, username, password):
         url = "%s/rpc/xmlrpc" % url
-        self.server = xmlrpclib.Server(url)
+        self.server = xmlrpc.client.Server(url)
         self.token = ConfluenceAuth(self.server, username, password).login()
 
     def addpage(self, name, spacekey, content, label="", parentpage=""):
@@ -40,7 +42,7 @@ class Api(object):
     def update_or_add_page(self, *args, **kwargs):
         try:
             return self.updatepage(*args, **kwargs)
-        except xmlrpclib.Fault:
+        except xmlrpc.Fault:
             return self.addpage(*args, **kwargs)
 
     def listpages(self, spacekey=""):
